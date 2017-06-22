@@ -28,8 +28,7 @@
   export default {
     data(){
       return {
-        books: [],
-        collected:false
+        books: []
       }
     },
     created(){
