@@ -21,3 +21,9 @@ export function getBook(id) {
 export function updateBook(id,data) {
   return axios.put("/api/book?id="+id,data);
 }
+export function collectBook(id) {
+  return axios.get("/api/collect?id="+id);
+}
+export function cancelCollect(id) {
+  return axios.get("/api/cancel?id="+id);
+}

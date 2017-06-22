@@ -90,4 +90,24 @@ http.createServer(function (req,res) {
         break;
     }
   }
+  if (pathname == "/api/collect"){
+    let id = query.id;
+    read(function (books) {
+      let book = books.find(item => item.id == id);
+      book?book.collected = true:null;
+      write(books,function () {
+        res.end(JSON.stringify(book));
+      })
+    })
+  }
+  if (pathname == "/api/cancel"){
+    let id = query.id;
+    read(function (books) {
+      let book = books.find(item => item.id == id);
+      book?book.collected = false:null;
+      write(books,function () {
+        res.end(JSON.stringify(book));
+      })
+    })
+  }
 }).listen(3000);

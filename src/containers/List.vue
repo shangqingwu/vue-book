@@ -8,7 +8,7 @@
           <div class="content">
             <h3>{{book.bookName}}</h3>
             <p>{{book.content}}</p>
-            <i class="iconfont icon-shoucang" @click="save(book)"></i>
+            <i class="iconfont icon-shoucang" :class="{iconColor:book.collected}" @click="save(book)"></i>
             <p class="btn">
               <router-link tag="button" :to="{path:'/update/'+book.id}">修改</router-link>
               <button @click="remove(book.id)">删除</button>
@@ -22,18 +22,14 @@
 </template>
 <script>
   import MHeader from "components/MHeader";
-  import {getBooks, removeBook, getBook, updateBook} from "api";
+  import {getBooks, removeBook, getBook, updateBook,collectBook} from "api";
   import {mapMutations} from "vuex";
   import * as Types from "../store/types";
   export default {
     data(){
       return {
         books: [],
-        newBook: {
-          bookName: "",
-          bookCover: "",
-          content: ""
-        }
+        collected:false
       }
     },
     created(){
@@ -46,7 +42,9 @@
       ...mapMutations([Types.ADD_COLLECT]),
       save(book){
           this[Types.ADD_COLLECT](book);//直接把book传到mutation中，作为第二个参数，放到state的collect数组中；
-        this.$router.push("/collect");
+        collectBook(book.id).then(res=>{
+          this.$router.push("/collect");
+        });
       },
       refresh(){  //获取最新数据；
         this.getList();
@@ -94,6 +92,9 @@
     line-height:25px;
   .icon-shoucang{
     color: #999;
+  }
+  .iconColor{
+    color: red;
   }
 
   h3 {

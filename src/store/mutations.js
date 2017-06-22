@@ -5,7 +5,10 @@ const mutations ={  //mutations里面放的是方法；
   [Types.ADD_COLLECT](state,obj){ //把这一项放到收藏数组中；
     // some判断这一项在不在数组中，返回布尔；
     let flag = state.collect.some(item=>item.id===obj.id);
-    !flag && state.collect.push(obj);
+    if (!flag){
+      obj.collected = true;
+      state.collect.push(obj);
+    }
     localStorage.setItem("collects",JSON.stringify(state.collect));
   },
   [Types.REMOVE_COLLECT](state,id){

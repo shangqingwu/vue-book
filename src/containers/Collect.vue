@@ -16,6 +16,7 @@
   import MHeader from "components/MHeader";
   import {mapState,mapMutations} from "vuex";
   import * as Types from "../store/types";
+  import {cancelCollect} from "api";
     export default {
         data(){
             return {}
@@ -30,6 +31,7 @@
           ...mapMutations([Types.REMOVE_COLLECT]),
           cancel(id){
             this[Types.REMOVE_COLLECT](id);
+            cancelCollect(id);
           }
         }
     }
