@@ -73,7 +73,7 @@ http.createServer(function (req,res) {
         req.on("end",function () {
           // console.log(id);
           let book = JSON.parse(strBook);
-          book.id = id;
+          // book.id = id;
           // console.log(book);
           read(function (books) {
             books = books.map(item=>{

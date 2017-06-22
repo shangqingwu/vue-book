@@ -4,19 +4,15 @@
     <scroller :on-refresh="refresh" ref="scroller" class="top"><!-- 可以在下面用this.$refs.scroller拿到scroller这个组件-->
       <ul class="list">
         <li v-for="book in books">
-          <img v-lazy="book.bookCover" v-show="!flag">
+          <img v-lazy="book.bookCover">
           <div class="content">
-            <h3 v-show="!flag">{{book.bookName}}</h3>
-            <input type="text" v-model="newBook.bookName" v-show="flag">
-            <input type="text" v-model="newBook.bookCover" v-show="flag">
-            <p v-show="!flag">{{book.content}}</p>
-            <input type="text" v-model="newBook.content" v-show="flag">
-            <div class="btn">
-              <button @click="remove(book.id)" v-show="!flag">删除</button>
-              <button @click="change(book.id)" v-show="!flag">修改</button>
-              <button @click="update(book.id)" v-show="flag">确认</button>
-              <button @click="cancel" v-show="flag">取消</button>
-            </div>
+            <h3>{{book.bookName}}</h3>
+            <p>{{book.content}}</p>
+            <i class="iconfont icon-shoucang" @click="save(book)"></i>
+            <p class="btn">
+              <router-link tag="button" :to="{path:'/update/'+book.id}">修改</router-link>
+              <button @click="remove(book.id)">删除</button>
+            </p>
           </div>
         </li>
       </ul>
@@ -25,8 +21,10 @@
   </div>
 </template>
 <script>
-  import MHeader from "components/MHeader"
-  import {getBooks, removeBook, getBook, updateBook} from "api"
+  import MHeader from "components/MHeader";
+  import {getBooks, removeBook, getBook, updateBook} from "api";
+  import {mapMutations} from "vuex";
+  import * as Types from "../store/types";
   export default {
     data(){
       return {
@@ -35,8 +33,7 @@
           bookName: "",
           bookCover: "",
           content: ""
-        },
-        flag: false
+        }
       }
     },
     created(){
@@ -46,11 +43,15 @@
       MHeader
     },
     methods: {
+      ...mapMutations([Types.ADD_COLLECT]),
+      save(book){
+          this[Types.ADD_COLLECT](book);//直接把book传到mutation中，作为第二个参数，放到state的collect数组中；
+        this.$router.push("/collect");
+      },
       refresh(){  //获取最新数据；
         this.getList();
       },
       getList(){
-
         getBooks().then(res=> {
           this.books = res.data;
 //              console.log(res.data);
@@ -65,24 +66,6 @@
           //前台手动删除，不要调用getList方法，如果调用的话，又会发送一次请求，耗性能；
           this.books = this.books.filter(book=>book.id != id);
         })
-      },
-      change(id){
-        this.flag = true;
-        getBook(id).then(res=> {
-          this.newBook.bookName = res.data.bookName;
-          this.newBook.bookCover = res.data.bookCover;
-          this.newBook.content = res.data.content;
-        });
-      },
-      update(id){
-//        console.log(id);
-        updateBook(id, this.newBook).then(res=> {
-//          console.log(res);
-          this.flag = false;
-        })
-      },
-      cancel(){
-        this.flag = false;
       }
     }
   }
@@ -101,12 +84,17 @@
   img {
     width: 100px;
     height: 90px;
+    margin:10px;
   }
 
   .content {
     display: flex;
     flex-direction: column;
     margin: 5px;
+    line-height:25px;
+  .icon-shoucang{
+    color: #999;
+  }
 
   h3 {
     color: #666;
@@ -114,11 +102,10 @@
 
   .btn {
     display: flex;
-    justify-content: center;
-
+    justify-content: space-between;
+    width:100px;
   button {
     width: 40px;
-    margin: 5px 10px 0 0;
   }
 
   }

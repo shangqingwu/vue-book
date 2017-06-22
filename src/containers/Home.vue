@@ -68,7 +68,7 @@ li {
   text-align: center;
 
 img {
-  width: 100%;
+  width: 80%;
 }
 
 }
